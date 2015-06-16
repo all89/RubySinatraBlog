@@ -1,0 +1,10 @@
+<!-- Results page for query -->
+<h2 style="color: #0084b1">Search results:</h2>
+<hr></hr>
+
+<% for count in @results.to_a %>
+	<div class="post_find">
+		<a href="/posts/<%= count.id %>"><%=h count.title %></a> by <%= count.user_id %> at <%= count.created_at %>.
+		<hr>
+	</div>
+<% end %>

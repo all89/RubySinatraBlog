@@ -1,0 +1,108 @@
+<!-- Each post is diplayed in details -->
+<h1 class="titlePost"><%=h @post.title %></h1>
+
+<h3>by <%= @post.user_id %></h3>
+<hr>
+
+<h5><span class="glyphicon glyphicon-time"></span> Posted on: <%= date_format(@post.created_at) %></h5>
+<% if @post.updated_at != nil %>
+    <h5><span class="glyphicon glyphicon-time"></span> Updated on: <%= @post.updated_at.strftime("%d %b %Y %R") %></h5>
+<% end %>
+<hr>
+
+<div><%= @post.content %></div>
+<hr>
+
+<!-- All tags for the specific post are shown -->
+<div>
+  <h4>
+    Tags: <% @post.tags.each do |tag| %>
+     <button class="btn btn-default btn-sm"><%= tag.name %></button>
+    <% end %>
+  </h4>
+</div>
+<hr>
+
+<!-- Share -->
+<div class="row">
+    <div class="col-lg-4">
+        <h4>Share this post on:</h4>
+    </div>
+    <div class="col-lg-4"> 
+    <a target="_blank" href="http://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2FtechX.com&title=<%=@post.title %>&summary=<%=@post.content %>"><img src="/images/fbShareBtn.jpg" alt="Share on Facebook" width="35" height="35"></a>
+
+    <a target="_blank" href="https://twitter.com/intent/tweet?text=<%=@post.title %>&url=http%3A%2F%2FtechX.com&via=techX"><img src="/images/twitterShareBtn.jpg" alt="Share on Twitter" width="35" height="35"></a>
+
+    <a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2FtechX&title=<%=@post.title %>&summary=<%=@post.content %>"><img src="/images/linkedShareBtn.jpg" alt="Share on LinkedIn" width="35" height="35"></a>
+
+    <a href="mailto:?subject=I wanted you to see this site&amp;body=Check out this site http://www.techX.com." title="Share by Email"><img src="/images/mailShareBtn.jpg" alt="Share by mail" width="35" height="35"></a>
+
+    </div>
+</div>
+<hr>
+
+<!-- If the logged in user is the author of the post edit and delete buttons are shown -->
+<% if session[:user] %>
+    <% if (@post.user_id == session[:user]) %>
+        <div class="row">
+            <div class="col-lg-2">
+                <input type="button" class="btn btn-primary" value="Edit Post" onclick="location.href='/posts/<%= @post.id %>/edit';">
+            </div>
+            <div class="col-lg-2">
+                <form action="/posts/<%= @post.id %>" method="post">
+                <input type="hidden" name="_method" value="delete" /> 
+                <input type="submit" class="btn btn-primary" value="Delete Post" />
+                </form>
+            </div>
+        </div>
+        <hr>
+<% end %>
+<% end %>
+
+
+<!-- The form that the logged in user can add comments -->
+<% if session[:user] %>
+    <form action="/comments" method="post">
+        <div class="form-group">
+            <textarea id="content" placeholder="Write your comment here..." class="form-control" name="content" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="hidden" name="post_id" value="<%= @post.id %>" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+    </form>
+<% end %>
+
+
+<!-- Each comment is displayed together with its edit or delete buttons if the author is the current logged in user -->
+<% @comments.each do |comment| %>
+<hr>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="well">
+        <p style="word-wrap: break-word"><%= comment.content %></p>
+        <br>
+        <h6>By: <%= comment.user_id %></h6>
+        <h6> Posted on: <%= date_format(comment.created_at) %></h6>
+        <% if comment.updated_at != nil %>
+            <h6>Updated on: <%= comment.updated_at.strftime("%d %b %Y %R") %></h6>
+        <% end %>
+        </div>
+    </div>
+    <div class="col-lg-4">
+    <br>
+    <% if (comment.user_id == session[:user]) %>
+        <input type="button" class="btn btn-default btn-sm" value="Edit Comment" onclick="location.href='/comments/<%= comment.id %>/edit';">
+        <br>
+        <br>
+        <form action="/comments/<%= comment.id %>" method="post">
+            <input type="hidden" name="_method" value="delete" /> 
+            <input type="submit" class="btn btn-default btn-sm" value="Delete Comment" />
+            </form>
+        <% end %>
+    </div>
+</div>
+<% end %>
+<br>
+<br>

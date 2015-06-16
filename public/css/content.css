@@ -1,0 +1,26 @@
+/*!
+ * Here is our custom CSS that is used in order to modify some bootstrap classes
+ */
+
+.titlePost {
+	color: #0084b1;
+}
+
+
+.box {
+text-overflow: ellipsis;
+display: block;
+width: XXXpx;
+height: 6em;
+overflow: hidden;
+}
+
+.tagline-divider {
+  margin: 15px auto 3px;
+  border-color: #999999;
+  max-width: 250px;
+}
+
+.btn-sm {
+ 	margin-bottom: 5px;
+}

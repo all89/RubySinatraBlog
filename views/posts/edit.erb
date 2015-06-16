@@ -1,0 +1,19 @@
+<!-- Each post can be edited -->
+<h2 style="color: #0084b1">Edit Post</h2>
+<hr>
+
+<form action="/posts/<%= @post.id %>" method="post" role="form">
+	<input type="hidden" name="_method" value="put" /> 
+  	<div class="form-group">
+  		<label for="post_title">Title:</label>
+ 		<br>
+  		<input id="post_title" class="form-control" name="post[title]" type="text" value="<%=h @post.title %>" />
+  		<br>
+ 
+ 		<label for="post_body">Body:</label>
+  		<br>
+  		<textarea id="post_body" class="form-control" name="post[content]" rows="10"><%= @post.content %></textarea>
+ 	</div>
+  		<button type="submit" class="btn btn-primary">Save</button>
+  		<button type="reset" class="btn btn-primary">Reset</button>
+</form> 

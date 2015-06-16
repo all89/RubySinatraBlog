@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%=h title %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/header.css" rel="stylesheet">
+    <link href="/css/content.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+     	<div class="container">
+        	<div class="navbar-header">
+          		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            	<span class="sr-only">Toggle navigation</span>
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+          		</button>
+         		<a class="navbar-brand" href="/">TechX</a>
+        	</div>
+
+        	<!-- Collect the nav links, forms, and other content for toggling -->
+        	<div class="collapse navbar-collapse navbar-ex1-collapse">
+          		<ul class="nav navbar-nav navbar-right">
+            	<% if session[:user] %>
+              		<li><a href=""><%= "Hello #{session[:user]}" %></a></li>
+            	<% end %>
+            	<% if !session[:user] %>
+              		<li><a href="/login">Login</a></li>
+              		<li><a href="/register">Register</a></li>
+            	<% else %>
+              		<li><a href="/logout">Logout</a></li>
+              		<li><a href="/posts/create">New Post</a></li>
+            	<% end %>
+          		</ul>
+        	</div>
+      	</div>
+    </nav>
+    
+    <div id="myCarousel" class="carousel slide">
+     	<!-- Indicators -->
+        <ol class="carousel-indicators">
+          	<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          	<li data-target="#myCarousel" data-slide-to="1"></li>
+          	<li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+          	<div class="item active">
+            	<div class="fill" style="background-image: url(/images/1.jpg);"></div>
+            	<div class="carousel-caption">
+              		<h3>Computers and Technology</h3>
+            	</div>
+          	</div>
+          	<div class="item">
+            	<div class="fill" style="background-image: url(/images/2.jpg);"></div>
+            	<div class="carousel-caption">
+             		<h3>Programming Platforms</h3>
+            	</div>
+          	</div>
+          	<div class="item">
+            	<div class="fill" style="background-image:url(/images/3.jpeg);"></div>
+            	<div class="carousel-caption">
+             	 	<h3>Social Medias</h3>
+           		</div>
+          	</div>
+        </div>
+
+        <!-- Controls -->
+        <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+          	<span class="icon-prev"></span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" data-slide="next">
+          	<span class="icon-next"></span>
+        </a>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- The main view area, where each view is going to be displayed-->
+    <div class="container">
+
+     	<div class="row">
+        	<div class="col-lg-8">
+          		<% if flash[:notice] %><!-- The flash notice and error are edited -->
+            		<p class="alert alert-success"><%= flash[:notice] %>
+          		<% end %>
+          		<% if flash[:error] %>
+            		<p class="alert alert-warning"><%= flash[:error] %>
+          		<% end %>
+        	</div>
+        	<div class="col-lg-4">
+        	</div>
+      	</div>
+
+      	<div class="row"> 
+        	<div class="col-lg-8">  
+          		<%= yield %> <!-- Each erb is yielded here -->
+        	</div>
+        	<br>
+        	<div class="col-lg-4">
+
+            <form action="/search" method="post"><!-- Search form -->         
+              <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search in our blog..." name="query"/>
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                  </span>
+              </div>
+            </form>
+
+            <br>
+            <hr class="tagline-divider">
+            <br>
+
+            <h3><b>Tags</b></h3><!-- Tag display -->  
+
+                <% if Tag.to_a.empty? %>
+                  <div class="tags">
+                    <p>No tags found...</p>
+                  </div>
+                <% else %>
+                  <div>
+                    <% for tagcount in Tag.to_a %>
+                     <a style="color:white" class="btn btn-primary btn-sm" href="/tags/<%= tagcount.id %>"><%=h tagcount.name %></a>
+                    <% end %>
+                  </div>
+                <% end %>
+
+
+              <br>
+              <hr class="tagline-divider">
+              <br>
+
+          		<h3><b>Most Visited Posts</b></h3><!-- Most viewed posts -->   
+              <br>
+            		<% if Post.to_a.empty? %>
+              			<div>
+                			<p>No posts found...</p>
+              			</div>
+            		<% else %>
+              			<% viewed = Post.reverse_order(:view_count).limit(5) %>
+              			<% for item in viewed.to_a %>
+                    <ul>
+                			<div class="viewedpost">
+                  				<li><a href="/posts/<%= item.id %>"><%=h item.title %></a> - <%= item.view_count %> views</li>
+                			</div>
+                      </ul>
+              			<% end %>
+            		<% end %>
+
+              <br>
+              <hr class="tagline-divider">
+              <br>
+
+          		<h3><b>Archive</b></h3><!-- Browse posts by month and year -->  
+              <div class="well">
+            		<% if Post.to_a.empty? %>
+              			<div class>
+                			<p>No articles found...</p>
+              			</div>
+            		<% else %>
+              			<% current_month = 0 %>
+              			<% current_year = 0 %>
+              			<% for item in Post.reverse_order(:created_at).to_a %>
+                			<% if (item.created_at.year != current_year) %>
+                  				<% current_year = item.created_at.year %>
+                 				 <h3 class="archiveyear"><%= item.created_at.year %></h4>
+                			<% end %>
+               				<% if (item.created_at.month != current_month || item.created_at.year != current_year) %>
+                  				<% current_month = item.created_at.month %>
+                  				<% current_year = item.created_at.year %>  
+                  				<h4 class="archivemonth"><%= (Date::MONTHNAMES[item.created_at.month]) %></h5>
+                			<% end %>
+                			<div class="archivepost">
+                 				<a href="/posts/<%= item.id %>"><%=h item.title %></a> on <%= item.created_at.strftime('%A')%> the <%= item.created_at.strftime('%d') + "th"%>
+                			</div>
+              			<% end %>
+            		<% end %>
+              </div>
+        	</div>
+      	</div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <!-- removes alerts after 4 seconds -->
+    <script>   
+    	window.setTimeout(function() {
+        $(".alert").fadeTo(4500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 4000);
+    </script>
+</body>
+</html>

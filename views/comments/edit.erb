@@ -1,0 +1,15 @@
+<!-- Each comment can be edited -->
+<h2 style="color: #0084b1">Edit Comment</h2>
+<hr>
+
+<form action="/comments/<%= @comment.id %>" method="post" role="form">
+	<input type="hidden" name="_method" value="put" /> 
+	<div class="form-group">
+ 		<label for="comment_body">Comment:</label>
+  		<br>
+  		<textarea id="comment_body" class="form-control" name="comment[content]" rows="2"><%= @comment.content %></textarea>
+  		<br>
+ 	</div>
+  		<button type="submit" class="btn btn-primary">Save</button>
+  		<button type="reset" class="btn btn-primary">Reset</button>
+</form> 

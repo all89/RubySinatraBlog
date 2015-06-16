@@ -1,0 +1,14 @@
+<!-- Results page for tags -->
+<h2 style="color: #0084b1">Posts with tag: '<i><%= @tag.name %></i>'</h2>
+<hr></hr>
+
+<% @tag_find = Posts_Tags.select(:post_id).where(:tag_id => @tag.id).all %>
+<% for count in @tag_find.to_a %>
+	<% @post_find = Post.where(:id => count.post_id).all %>
+		<% for item in @post_find.to_a %>
+		<div class="post_find">
+			<a href="/posts/<%= item.id %>"><%=h item.title %></a> by <%= item.user_id %> at <%= item.created_at %>.
+			<hr>
+		</div>
+	<% end %>
+<% end %>

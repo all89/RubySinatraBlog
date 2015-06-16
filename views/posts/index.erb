@@ -1,0 +1,19 @@
+<!-- Each post created is diplayed in the main home page with its proper attributes and also can be linked to the detailed post -->
+<% @posts.each do |post| %>
+	<div class="well">
+		<h1><a href="/posts/<%= post.id %>"><%=h post.title %></a></h1>
+		<p>by <%= post.user_id %></p>
+		<p><span class="glyphicon glyphicon-time"></span> Created on: <%= date_format(post.created_at) %></p>
+		<% if post.updated_at != nil %>
+			<p><span class="glyphicon glyphicon-time"></span> Updated on: <%= post.updated_at.strftime("%d %b %Y %R") %></p>
+		<% end %>
+		<hr>
+		<div class="box">
+				<p><%=h post.content %></p>
+		</div>
+		<a class="btn btn-primary" href="/posts/<%= post.id %>">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+	</div>    
+<% end %>
+
+<!-- Displaying the pager for browsing through the blog posts  -->
+<%= will_paginate @posts %>
